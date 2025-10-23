@@ -25,7 +25,7 @@ fun HomeScreen(navController: NavController) {
     ) {
         // Título principal
         Text(
-            text = "Bienvenido a My Application",
+            text = "Bienvenido a Tienda Y2K",
             style = MaterialTheme.typography.headlineMedium,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(bottom = 32.dp)
@@ -33,7 +33,7 @@ fun HomeScreen(navController: NavController) {
 
         // Subtítulo
         Text(
-            text = "Tu tienda en línea favorita",
+            text = "Tu tienda Y2K Favorita",
             style = MaterialTheme.typography.bodyLarge,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(bottom = 48.dp)

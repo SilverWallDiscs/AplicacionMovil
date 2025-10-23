@@ -14,19 +14,23 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.ShoppingCart
+import java.text.DecimalFormat
 
 data class Product(val id: Int, val name: String, val price: Double)
-@OptIn(ExperimentalMaterial3Api::class)
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductosScreen(navController: NavController) {
     val products = remember {
         listOf(
-            Product(1, "Producto 1", 29.99),
-            Product(2, "Producto 2", 49.99),
-            Product(3, "Producto 3", 19.99)
+            Product(1, "Polera Y2K", 10000.0),
+            Product(2, "Jeans True Religion", 25000.0),
+            Product(3, "Poleron Oversize", 20000.0)
         )
     }
+
+    // Usamos DecimalFormat para formatear el precio sin los ceros innecesarios
+    val decimalFormat = remember { DecimalFormat("#,###.##") }
 
     Column(modifier = Modifier.fillMaxSize()) {
         TopAppBar(
@@ -58,7 +62,7 @@ fun ProductosScreen(navController: NavController) {
                     ) {
                         Column {
                             Text(product.name, style = MaterialTheme.typography.titleMedium)
-                            Text("$${product.price}", style = MaterialTheme.typography.bodyMedium)
+                            Text("$${decimalFormat.format(product.price)}", style = MaterialTheme.typography.bodyMedium)
                         }
                         Button(onClick = { /* Agregar al carrito */ }) {
                             Text("Agregar")
