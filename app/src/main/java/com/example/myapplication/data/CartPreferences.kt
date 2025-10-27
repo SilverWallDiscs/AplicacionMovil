@@ -7,6 +7,8 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.example.myapplication.screens.Product
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import java.text.SimpleDateFormat
+import java.util.*
 
 val Context.cartDataStore by preferencesDataStore("cart_prefs")
 val REPORTS_KEY = stringPreferencesKey("reports")
@@ -25,9 +27,15 @@ class CartPreferences(private val context: Context) {
 
     suspend fun addPurchaseReport(userName: String, cart: List<Pair<Product, Int>>) {
         val existingReports = context.cartDataStore.data.map { it[REPORTS_KEY] ?: "" }.first()
-        val newReport = "$userName compró ${cart.size} productos: " +
+
+        val total = cart.sumOf { it.first.price * it.second } // total gastado
+        val date = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
+
+        val newReport = "$date | $userName compró ${cart.size} productos por $$total: " +
                 cart.joinToString(", ") { "${it.first.name} x${it.second}" }
+
         val updated = if (existingReports.isBlank()) newReport else "$existingReports|$newReport"
+
         context.cartDataStore.edit { prefs ->
             prefs[REPORTS_KEY] = updated
         }

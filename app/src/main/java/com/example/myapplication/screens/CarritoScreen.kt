@@ -133,8 +133,13 @@ fun CarritoScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(
                         onClick = {
+                            // Guardar reporte en DataStore
+                            cartViewModel.savePurchaseReport(userName!!)
+
+                            // Limpiar carrito
                             cartViewModel.clearCart(userName!!)
-                            Toast.makeText(context, "Producto comprado correctamente", Toast.LENGTH_SHORT).show()
+
+                            Toast.makeText(context, "Compra registrada correctamente", Toast.LENGTH_SHORT).show()
                         },
                         modifier = Modifier.fillMaxWidth()
                     ) { Text("Comprar") }

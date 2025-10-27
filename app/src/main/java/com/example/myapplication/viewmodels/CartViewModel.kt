@@ -69,6 +69,7 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+
     fun getTotal(): Double {
         return _cartItems.value.sumOf { it.first.price * it.second }
     }
@@ -85,5 +86,12 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
         val flow = MutableStateFlow<List<String>>(emptyList())
         viewModelScope.launch { flow.value = cartPrefs.getAllReports() }
         return flow
+    }
+
+    fun savePurchaseReport(userName: String) {
+        viewModelScope.launch {
+            val currentCart = cartItems.value
+            cartPrefs.addPurchaseReport(userName, currentCart) // ← usar cartPrefs
+        }
     }
 }
