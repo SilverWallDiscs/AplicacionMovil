@@ -21,14 +21,16 @@ import com.example.myapplication.viewmodel.UserViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(navController: NavController, userViewModel: UserViewModel) {
+    // observo el nombre del usuario desde el viewmodel
     val userNameState = userViewModel.userName.collectAsState(initial = null)
     val userName = userNameState.value
 
-
+    // estructura principal con barra superior
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
+                    // titulo centrado de la app
                     Text(
                         text = "Tienda Y2K",
                         style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
@@ -41,6 +43,7 @@ fun HomeScreen(navController: NavController, userViewModel: UserViewModel) {
             )
         }
     ) { padding ->
+        // contenido principal de la pantalla
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -50,12 +53,14 @@ fun HomeScreen(navController: NavController, userViewModel: UserViewModel) {
             verticalArrangement = Arrangement.Center
         ) {
 
+            // logo principal
             Image(
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = "Logo Tienda Y2K",
                 modifier = Modifier.size(100.dp).padding(bottom = 24.dp)
             )
 
+            // texto de bienvenida
             Text(
                 text = "Bienvenido a Tienda Y2K",
                 style = MaterialTheme.typography.headlineSmall.copy(
@@ -66,6 +71,7 @@ fun HomeScreen(navController: NavController, userViewModel: UserViewModel) {
                 modifier = Modifier.padding(bottom = 12.dp)
             )
 
+            // texto secundario con descripcion
             Text(
                 text = "Tu destino favorito para lo retro-futurista ✨",
                 style = MaterialTheme.typography.bodyLarge.copy(
@@ -75,11 +81,13 @@ fun HomeScreen(navController: NavController, userViewModel: UserViewModel) {
                 modifier = Modifier.padding(bottom = 48.dp)
             )
 
+            // columna con botones principales
             Column(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
+                // boton para ver los productos
                 Button(
                     onClick = { navController.navigate(Screen.Productos.route) },
                     modifier = Modifier.fillMaxWidth(0.85f).height(56.dp),
@@ -89,6 +97,7 @@ fun HomeScreen(navController: NavController, userViewModel: UserViewModel) {
                     Text("Ver Productos")
                 }
 
+                // boton para entrar como admin
                 Button(
                     onClick = { navController.navigate(Screen.AdminLogin.route) },
                     modifier = Modifier.fillMaxWidth()
@@ -96,12 +105,14 @@ fun HomeScreen(navController: NavController, userViewModel: UserViewModel) {
                     Text("Admin Login")
                 }
 
+                // boton para ver el carrito
                 OutlinedButton(
                     onClick = { navController.navigate(Screen.Carrito.route) },
                     modifier = Modifier.fillMaxWidth(0.85f).height(56.dp),
                     shape = MaterialTheme.shapes.large
                 ) { Text("Mi Carrito") }
 
+                // si no hay usuario muestra opciones de login y registro
                 if (userName == null) {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -110,7 +121,7 @@ fun HomeScreen(navController: NavController, userViewModel: UserViewModel) {
                         TextButton(
                             onClick = { navController.navigate(Screen.Login.route) },
                             modifier = Modifier.weight(1f)
-                        ) { Text("Iniciar Sesión") }
+                        ) { Text("Iniciar Sesion") }
 
                         TextButton(
                             onClick = { navController.navigate(Screen.Register.route) },
@@ -118,10 +129,11 @@ fun HomeScreen(navController: NavController, userViewModel: UserViewModel) {
                         ) { Text("Registrarse") }
                     }
                 } else {
+                    // si hay usuario muestra saludo y boton de cerrar sesion
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text("Hola, $userName", style = MaterialTheme.typography.titleMedium)
                         Button(onClick = { userViewModel.logout() }) {
-                            Text("Cerrar Sesión")
+                            Text("Cerrar Sesion")
                         }
                     }
                 }

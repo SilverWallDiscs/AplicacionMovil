@@ -23,6 +23,7 @@ import com.example.myapplication.navigation.Screen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+// esta funcion dibuja la pantalla del carrito
 fun CarritoScreen(
     navController: NavController,
     userViewModel: UserViewModel,
@@ -30,23 +31,31 @@ fun CarritoScreen(
     productViewModel: ProductViewModel
 ) {
     val context = LocalContext.current
+    // obtengo el contexto para usar con toast
     val userName by userViewModel.userName.collectAsState()
+    // guardo el nombre del usuario actual
     val products by productViewModel.products.collectAsState()
+    // guardo la lista de productos
     val cartItems by cartViewModel.cartItems.collectAsState()
+    // guardo los productos que estan en el carrito
 
     LaunchedEffect(userName, products) {
+        // cuando cambia el usuario o los productos recargo el carrito
         if (userName != null) {
             cartViewModel.loadCart(userName!!, products)
         }
     }
 
     if (userName == null) {
+        // si no hay usuario logueado vuelvo al login
         LaunchedEffect(Unit) { navController.navigate(Screen.Login.route) }
         return
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
+        // estructura principal en columna
         TopAppBar(
+            // barra superior con titulo y boton volver
             title = { Text("Carrito de Compras") },
             navigationIcon = {
                 IconButton(onClick = { navController.navigateUp() }) {
@@ -56,10 +65,12 @@ fun CarritoScreen(
         )
 
         if (cartItems.isEmpty()) {
+            // si el carrito esta vacio muestro mensaje
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("Tu carrito está vacío", style = MaterialTheme.typography.headlineSmall)
+                Text("Tu carrito esta vacio", style = MaterialTheme.typography.headlineSmall)
             }
         } else {
+            // si hay productos muestro la lista
             LazyColumn(
                 modifier = Modifier
                     .weight(1f)
@@ -67,6 +78,7 @@ fun CarritoScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(cartItems) { (product, qty) ->
+                    // cada item del carrito
                     Card(modifier = Modifier.fillMaxWidth()) {
                         Column(
                             modifier = Modifier
@@ -79,7 +91,7 @@ fun CarritoScreen(
                                 horizontalArrangement = Arrangement.Start,
                                 modifier = Modifier.fillMaxWidth()
                             ) {
-                                // Imagen del producto
+                                // imagen del producto
                                 if (product.imageUri.isNotEmpty()) {
                                     Image(
                                         painter = rememberAsyncImagePainter(product.imageUri),
@@ -90,29 +102,33 @@ fun CarritoScreen(
                                     Spacer(modifier = Modifier.width(12.dp))
                                 }
 
-                                // Botones de cantidad y eliminar
+                                // botones de cantidad y eliminar
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     IconButton(
                                         onClick = { if (qty > 1) cartViewModel.removeFromCart(product, userName!!) }
                                     ) { Text("-") }
+                                    // boton para restar cantidad
 
                                     Text("$qty", modifier = Modifier.padding(horizontal = 8.dp))
+                                    // cantidad actual
 
                                     IconButton(
                                         onClick = { cartViewModel.addToCart(product, userName!!) }
                                     ) { Text("+") }
+                                    // boton para sumar cantidad
 
                                     Spacer(modifier = Modifier.width(8.dp))
 
                                     Button(
                                         onClick = { cartViewModel.clearCartItem(product, userName!!) },
+                                        // boton para eliminar producto del carrito
                                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
                                         modifier = Modifier.height(36.dp)
                                     ) { Text("X", color = MaterialTheme.colorScheme.onError) }
                                 }
                             }
 
-                            // Nombre y precio debajo de todo
+                            // nombre y precio debajo
                             Spacer(modifier = Modifier.height(8.dp))
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 Text(product.name, style = MaterialTheme.typography.titleMedium)
@@ -123,8 +139,12 @@ fun CarritoScreen(
                 }
             }
 
-            // Total y botón de compra
-            Card(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+            // total y boton de compra
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
                         "Total: $${cartViewModel.getTotal()}",
@@ -133,10 +153,10 @@ fun CarritoScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(
                         onClick = {
-                            // Guardar reporte en DataStore
+                            // guardo reporte en datastore
                             cartViewModel.savePurchaseReport(userName!!)
 
-                            // Limpiar carrito
+                            // limpio el carrito despues de comprar
                             cartViewModel.clearCart(userName!!)
 
                             Toast.makeText(context, "Compra registrada correctamente", Toast.LENGTH_SHORT).show()

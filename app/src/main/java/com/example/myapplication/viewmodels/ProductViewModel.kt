@@ -11,25 +11,29 @@ import kotlinx.coroutines.launch
 
 class ProductViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val prefs = ProductPreferences(application)
+    private val prefs = ProductPreferences(application) // instancia de preferencias de productos
 
-    private val _products = MutableStateFlow<List<Product>>(emptyList()) // lista inmutable
+    // lista de productos expuesta como StateFlow
+    private val _products = MutableStateFlow<List<Product>>(emptyList()) // lista interna inmutable
     val products: StateFlow<List<Product>> = _products
 
+    // cargar productos guardados al iniciar el ViewModel
     init {
         viewModelScope.launch {
             _products.value = prefs.getProducts()
         }
     }
 
+    // agregar un nuevo producto
     fun addProduct(product: Product) {
         viewModelScope.launch {
             val updatedList = _products.value + product
             _products.value = updatedList
-            prefs.saveProducts(updatedList.toMutableList()) // prefs usa MutableList
+            prefs.saveProducts(updatedList.toMutableList()) // guardar en DataStore
         }
     }
 
+    // actualizar un producto existente
     fun updateProduct(updated: Product) {
         viewModelScope.launch {
             val updatedList = _products.value.map {
@@ -40,6 +44,7 @@ class ProductViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
+    // eliminar un producto
     fun removeProduct(product: Product) {
         viewModelScope.launch {
             val updatedList = _products.value.filter { it.id != product.id }

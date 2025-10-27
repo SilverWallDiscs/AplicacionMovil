@@ -11,11 +11,13 @@ import kotlinx.coroutines.launch
 
 class CartViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val cartPrefs = CartPreferences(application)
+    private val cartPrefs = CartPreferences(application) // instancia de preferencias del carrito
 
+    // estado interno del carrito (lista de pares: producto + cantidad)
     private val _cartItems = MutableStateFlow<MutableList<Pair<Product, Int>>>(mutableListOf())
-    val cartItems: StateFlow<MutableList<Pair<Product, Int>>> = _cartItems
+    val cartItems: StateFlow<MutableList<Pair<Product, Int>>> = _cartItems // exposicion del estado
 
+    // carga el carrito de un usuario desde DataStore
     fun loadCart(userName: String, productsList: List<Product>) {
         viewModelScope.launch {
             val loaded = cartPrefs.getCart(userName, productsList)
@@ -23,6 +25,7 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    // agrega un producto al carrito o aumenta la cantidad si ya existe
     fun addToCart(product: Product, userName: String) {
         viewModelScope.launch {
             val list = _cartItems.value.toMutableList()
@@ -38,6 +41,7 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    // reduce la cantidad de un producto en el carrito, si es 1 no lo quita
     fun removeFromCart(product: Product, userName: String) {
         viewModelScope.launch {
             val list = _cartItems.value.toMutableList()
@@ -53,6 +57,7 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    // elimina completamente un producto del carrito
     fun clearCartItem(product: Product, userName: String) {
         viewModelScope.launch {
             val list = _cartItems.value.toMutableList()
@@ -62,6 +67,7 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    // vacía todo el carrito
     fun clearCart(userName: String) {
         viewModelScope.launch {
             _cartItems.value = mutableListOf()
@@ -69,12 +75,14 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-
+    // calcula el total del carrito
     fun getTotal(): Double {
         return _cartItems.value.sumOf { it.first.price * it.second }
     }
 
     // ----------------- FUNCIONES REPORTES -----------------
+
+    // guarda un reporte de compra y vacía el carrito
     fun purchaseCart(userName: String) {
         viewModelScope.launch {
             cartPrefs.addPurchaseReport(userName, _cartItems.value)
@@ -82,16 +90,18 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    // devuelve los reportes de compras en un StateFlow
     fun getReports(): StateFlow<List<String>> {
         val flow = MutableStateFlow<List<String>>(emptyList())
         viewModelScope.launch { flow.value = cartPrefs.getAllReports() }
         return flow
     }
 
+    // guarda un reporte de la compra actual sin vaciar el carrito
     fun savePurchaseReport(userName: String) {
         viewModelScope.launch {
             val currentCart = cartItems.value
-            cartPrefs.addPurchaseReport(userName, currentCart) // ← usar cartPrefs
+            cartPrefs.addPurchaseReport(userName, currentCart)
         }
     }
 }

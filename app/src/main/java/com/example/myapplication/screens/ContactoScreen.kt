@@ -14,13 +14,19 @@ import androidx.compose.material.icons.filled.ShoppingCart
 @OptIn(ExperimentalMaterial3Api::class)
 
 @Composable
+// esta funcion dibuja la pantalla de contacto
 fun ContactoScreen(navController: NavController) {
     var name by remember { mutableStateOf("") }
+    // guarda el nombre que escribe el usuario
     var email by remember { mutableStateOf("") }
+    // guarda el correo que escribe el usuario
     var message by remember { mutableStateOf("") }
+    // guarda el mensaje que escribe el usuario
 
     Column(modifier = Modifier.fillMaxSize()) {
+        // estructura principal en columna
         TopAppBar(
+            // barra superior con titulo y boton para volver atras
             title = { Text("Contacto") },
             navigationIcon = {
                 IconButton(onClick = { navController.navigateUp() }) {
@@ -30,18 +36,23 @@ fun ContactoScreen(navController: NavController) {
         )
 
         Column(
+            // contenido principal de la pantalla
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
+            // todo centrado horizontal
             verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top)
+            // separo los elementos y los dejo arriba
         ) {
             Text(
-                text = "Contáctanos",
+                // titulo principal
+                text = "Contactanos",
                 style = MaterialTheme.typography.headlineMedium
             )
 
             OutlinedTextField(
+                // campo de texto para el nombre
                 value = name,
                 onValueChange = { name = it },
                 label = { Text("Nombre") },
@@ -49,6 +60,7 @@ fun ContactoScreen(navController: NavController) {
             )
 
             OutlinedTextField(
+                // campo de texto para el correo
                 value = email,
                 onValueChange = { email = it },
                 label = { Text("Email") },
@@ -56,6 +68,7 @@ fun ContactoScreen(navController: NavController) {
             )
 
             OutlinedTextField(
+                // campo de texto para el mensaje
                 value = message,
                 onValueChange = { message = it },
                 label = { Text("Mensaje") },
@@ -66,22 +79,26 @@ fun ContactoScreen(navController: NavController) {
             )
 
             Button(
-                onClick = { /* Enviar mensaje */ },
+                // boton para enviar el mensaje
+                onClick = { /* enviar mensaje */ },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Enviar Mensaje")
             }
 
             Spacer(modifier = Modifier.height(32.dp))
+            // espacio para separar secciones
 
             Text(
-                text = "Información de Contacto",
+                // titulo de la seccion de info
+                text = "Informacion de Contacto",
                 style = MaterialTheme.typography.titleMedium
             )
 
+            // datos de contacto de la empresa
             Text("Email: contacto@y2k.com")
-            Text("Teléfono: +56 9 1234 5678")
-            Text("Dirección: Calle duoc 123")
+            Text("Telefono: +56 9 1234 5678")
+            Text("Direccion: Calle duoc 123")
         }
     }
 }

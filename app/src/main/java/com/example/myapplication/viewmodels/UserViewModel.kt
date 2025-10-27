@@ -10,18 +10,22 @@ import kotlinx.coroutines.launch
 
 class UserViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val prefs = UserPreferences(application)
+    private val prefs = UserPreferences(application) // instancia de UserPreferences (DataStore)
 
+    // Estado interno del nombre del usuario actual
     private val _userName = MutableStateFlow<String?>(null)
     val userName: StateFlow<String?> get() = _userName
 
+    // al iniciar, cargamos el usuario actualmente logueado
     init {
         viewModelScope.launch {
             _userName.value = prefs.getCurrentUser()
         }
     }
 
-    // ----------------- LOGIN/REGISTER -----------------
+    // ----------------- LOGIN / REGISTER -----------------
+
+    // registrar un nuevo usuario
     fun register(name: String, email: String, password: String, onResult: (Boolean, String) -> Unit) {
         viewModelScope.launch {
             if (prefs.emailExists(email)) {
@@ -34,6 +38,7 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    // login de usuario
     fun login(email: String, password: String, onResult: (Boolean, String) -> Unit) {
         viewModelScope.launch {
             val name = prefs.login(email, password)
@@ -46,6 +51,7 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    // cerrar sesión
     fun logout() {
         viewModelScope.launch {
             prefs.logout()
@@ -54,6 +60,8 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     // ----------------- FUNCIONES ADMIN -----------------
+
+    // obtener todos los emails de usuarios registrados
     fun getAllUsers(): StateFlow<List<String>> {
         val flow = MutableStateFlow<List<String>>(emptyList())
         viewModelScope.launch {
@@ -62,6 +70,7 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
         return flow
     }
 
+    // actualizar contraseña de un usuario específico
     fun updatePassword(email: String, newPassword: String) {
         viewModelScope.launch {
             prefs.updatePassword(email, newPassword)

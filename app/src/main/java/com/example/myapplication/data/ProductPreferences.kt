@@ -8,13 +8,14 @@ import com.example.myapplication.screens.Product
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
+// se crea un DataStore para guardar la lista de productos
 val Context.productDataStore by preferencesDataStore("products_prefs")
 
 class ProductPreferences(private val context: Context) {
 
     private val PRODUCTS_KEY = stringPreferencesKey("products")
 
-    // Guardar lista de productos
+    // guarda la lista de productos en formato texto (id, nombre, precio, imagen)
     suspend fun saveProducts(products: List<Product>) {
         val serialized = products.joinToString(";") { "${it.id},${it.name},${it.price},${it.imageUri}" }
         context.productDataStore.edit { prefs ->
@@ -22,7 +23,7 @@ class ProductPreferences(private val context: Context) {
         }
     }
 
-    // Cargar productos
+    // obtiene la lista de productos desde el DataStore
     suspend fun getProducts(): MutableList<Product> {
         val data = context.productDataStore.data.map { it[PRODUCTS_KEY] ?: "" }.first()
         if (data.isBlank()) return mutableListOf()

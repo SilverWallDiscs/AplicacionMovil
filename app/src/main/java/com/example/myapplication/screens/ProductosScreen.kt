@@ -34,13 +34,20 @@ fun ProductosScreen(
     cartViewModel: CartViewModel,
     productViewModel: ProductViewModel
 ) {
+    // obtiene el nombre del usuario y la lista de productos desde los viewmodels
     val userName by userViewModel.userName.collectAsState()
     val products by productViewModel.products.collectAsState()
 
     Scaffold(
+        // barra superior con titulo del catalogo y boton de volver
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Catálogo Y2K", style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)) },
+                title = {
+                    Text(
+                        "Catálogo Y2K",
+                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Volver")
@@ -48,23 +55,45 @@ fun ProductosScreen(
                 }
             )
         },
+        // boton flotante para ir al carrito o al login
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    if (userName != null) navController.navigate(Screen.Carrito.route)
-                    else navController.navigate(Screen.Login.route)
+                    if (userName != null)
+                        navController.navigate(Screen.Carrito.route)
+                    else
+                        navController.navigate(Screen.Login.route)
                 }
-            ) { Icon(Icons.Default.ShoppingCart, contentDescription = "Ir al carrito") }
+            ) {
+                Icon(Icons.Default.ShoppingCart, contentDescription = "Ir al carrito")
+            }
         }
     ) { padding ->
+        // lista de productos
         LazyColumn(
-            modifier = Modifier.fillMaxSize().padding(padding).padding(16.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             items(products) { product ->
-                Card(modifier = Modifier.fillMaxWidth().height(160.dp), shape = RoundedCornerShape(16.dp)) {
-                    Row(modifier = Modifier.fillMaxSize().padding(12.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                // cada producto se muestra dentro de una card
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(160.dp),
+                    shape = RoundedCornerShape(16.dp)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        // muestra la imagen del producto si existe
                         if (product.imageUri.isNotEmpty()) {
                             Image(
                                 painter = rememberAsyncImagePainter(product.imageUri),
@@ -74,19 +103,36 @@ fun ProductosScreen(
                             )
                         }
 
-                        Column(modifier = Modifier.weight(0.6f).fillMaxHeight(), verticalArrangement = Arrangement.SpaceBetween) {
+                        // muestra el nombre, precio y boton para agregar al carrito
+                        Column(
+                            modifier = Modifier
+                                .weight(0.6f)
+                                .fillMaxHeight(),
+                            verticalArrangement = Arrangement.SpaceBetween
+                        ) {
                             Column {
-                                Text(product.name, style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold))
-                                Text("$${"%,.0f".format(product.price)}", color = MaterialTheme.colorScheme.primary)
+                                Text(
+                                    product.name,
+                                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+                                )
+                                Text(
+                                    "$${"%,.0f".format(product.price)}",
+                                    color = MaterialTheme.colorScheme.primary
+                                )
                             }
 
+                            // boton para agregar al carrito o ir al login
                             Button(
                                 onClick = {
-                                    if (userName != null) cartViewModel.addToCart(product, userName!!)
-                                    else navController.navigate(Screen.Login.route)
+                                    if (userName != null)
+                                        cartViewModel.addToCart(product, userName!!)
+                                    else
+                                        navController.navigate(Screen.Login.route)
                                 },
                                 modifier = Modifier.fillMaxWidth()
-                            ) { Text("Agregar al carrito") }
+                            ) {
+                                Text("Agregar al carrito")
+                            }
                         }
                     }
                 }

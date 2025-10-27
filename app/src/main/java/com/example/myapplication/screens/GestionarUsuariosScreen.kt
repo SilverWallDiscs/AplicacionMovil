@@ -12,20 +12,24 @@ import com.example.myapplication.viewmodel.UserViewModel
 
 @Composable
 fun GestionarUsuariosScreen(navController: NavController, userViewModel: UserViewModel) {
-    // Observar directamente el StateFlow
+    // observo los usuarios desde el viewmodel usando collectAsState
     val users by userViewModel.getAllUsers().collectAsState(initial = emptyList())
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        // titulo de la pantalla
         Text("Gestionar Usuarios", style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(16.dp))
 
+        // lista con los usuarios
         LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             items(users) { user ->
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
+                    // muestra el nombre del usuario
                     Text(user)
+                    // boton para resetear contrasena
                     Button(onClick = { userViewModel.updatePassword(user, "123456") }) {
                         Text("Reset Password")
                     }
@@ -34,6 +38,7 @@ fun GestionarUsuariosScreen(navController: NavController, userViewModel: UserVie
         }
 
         Spacer(modifier = Modifier.height(16.dp))
+        // boton para volver atras
         Button(onClick = { navController.navigateUp() }) {
             Text("Volver")
         }
