@@ -79,9 +79,9 @@ fun ContactoScreen(navController: NavController) {
                 style = MaterialTheme.typography.titleMedium
             )
 
-            Text("Email: contacto@myapp.com")
-            Text("Teléfono: +1 234 567 890")
-            Text("Dirección: Calle Principal 123")
+            Text("Email: contacto@y2k.com")
+            Text("Teléfono: +56 9 1234 5678")
+            Text("Dirección: Calle duoc 123")
         }
     }
 }

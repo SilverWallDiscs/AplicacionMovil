@@ -9,4 +9,9 @@ sealed class Screen(val route: String) {
     object Admin : Screen("admin")
     object Contacto : Screen("contacto")
     object AdminLogin : Screen("admin_login")
+
+    // Rutas de administración funcional
+    object GestionarProductos : Screen("gestionar_productos")
+    object GestionarUsuarios : Screen("gestionar_usuarios")
+    object VerReportes : Screen("ver_reportes")
 }

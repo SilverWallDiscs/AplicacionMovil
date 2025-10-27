@@ -2,16 +2,16 @@ package com.example.myapplication.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Delete
-@OptIn(ExperimentalMaterial3Api::class)
+import com.example.myapplication.navigation.Screen
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AdminPanelScreen(navController: NavController) {
     Column(modifier = Modifier.fillMaxSize()) {
@@ -37,28 +37,28 @@ fun AdminPanelScreen(navController: NavController) {
             )
 
             Button(
-                onClick = { /* Gestionar productos */ },
+                onClick = { navController.navigate(Screen.GestionarProductos.route) },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Gestionar Productos")
             }
 
             Button(
-                onClick = { /* Gestionar usuarios */ },
+                onClick = { navController.navigate(Screen.GestionarUsuarios.route) },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Gestionar Usuarios")
             }
 
             Button(
-                onClick = { /* Ver reportes */ },
+                onClick = { navController.navigate(Screen.VerReportes.route) },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Ver Reportes")
             }
 
             Button(
-                onClick = { /* Configuraciones */ },
+                onClick = { /* Configuraciones sin función aún */ },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Configuraciones")
